@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pavagadh Diaries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --paper:   #F7F2EA;
+  --warm:    #EDE5D8;
+  --sand:    #D4C4A8;
+  --rust:    #B5521A;
+  --ochre:   #C98A2C;
+  --forest:  #3B5E3A;
+  --ink:     #1C1410;
+  --muted:   #7A6A58;
+  --red:     #C13B1B;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity: 0.6;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:800;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 1.1rem 4rem;
+  mix-blend-mode: multiply;
+}
+nav.solid {
+  background: rgba(247,242,234,0.95);
+  backdrop-filter: blur(12px);
+  mix-blend-mode: normal;
+  border-bottom: 1px solid var(--sand);
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-style:italic; font-size:1.4rem; color: var(--ink);
+  letter-spacing:0.02em;
+}
+.nav-links { display:flex; gap:2.5rem; list-style:none; }
+.nav-links a {
+  font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--muted); text-decoration:none; transition:color 0.2s;
+}
+.nav-links a:hover { color:var(--rust); }
+
+/* ── HERO: FULL BLEED SPLIT ── */
+.hero {
+  height: 100vh; min-height:620px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  position:relative; overflow:hidden;
+}
+.hero-img-side {
+  position:relative; overflow:hidden;
+}
+.hero-img-side img {
+  width:100%; height:100%; object-fit:cover;
+  transform: scale(1.05);
+  transition: transform 8s ease;
+}
+.hero-img-side img.loaded { transform: scale(1); }
+.hero-text-side {
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding: 5rem 4rem 5rem 5rem;
+  background: var(--paper);
+  position:relative;
+}
+.hero-eyebrow {
+  font-family:'Caveat', cursive;
+  font-size:1.1rem; color:var(--rust);
+  margin-bottom:1.5rem;
+  display:flex; align-items:center; gap:0.8rem;
+}
+.hero-eyebrow::before { content:''; display:block; width:2rem; height:1.5px; background:var(--rust); }
+.hero h1 {
+  font-family:'Cormorant Garamond', serif;
+  font-size: clamp(4rem, 6vw, 6.5rem);
+  line-height:0.88; font-weight:700;
+  color:var(--ink); margin-bottom:2rem;
+}
+.hero h1 span { display:block; font-style:italic; color:var(--rust); }
+.hero-desc {
+  font-size:0.9rem; line-height:1.8; color:var(--muted);
+  max-width:36ch; margin-bottom:2.5rem;
+}
+.hero-chips { display:flex; flex-wrap:wrap; gap:0.6rem; }
+.chip {
+  padding:0.4rem 1rem;
+  border:1px solid var(--sand); border-radius:100px;
+  font-size:0.7rem; letter-spacing:0.08em; color:var(--muted);
+  background: var(--warm);
+}
+.hero-stamp {
+  position:absolute; top:4rem; right:3rem;
+  width:110px; height:110px;
+  border:2px solid var(--ochre); border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center;
+  transform: rotate(12deg);
+}
+.hero-stamp .s1 { font-family:'Caveat',cursive; font-size:0.75rem; color:var(--ochre); }
+.hero-stamp .s2 { font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.6rem; color:var(--rust); line-height:1; }
+.hero-stamp .s3 { font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--ochre); margin-top:0.2rem; }
+
+/* ── TICKER ── */
+.ticker {
+  background: var(--rust);
+  overflow:hidden; white-space:nowrap;
+  padding: 0.75rem 0;
+}
+.ticker-inner {
+  display:inline-block; animation: ticker 28s linear infinite;
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic; font-size:1rem; color:rgba(255,255,255,0.9);
+  letter-spacing:0.08em;
+}
+@keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ── INTRO: EDITORIAL FULL-BLEED ── */
+.editorial-intro {
+  display:grid; grid-template-columns:60% 40%;
+  min-height: 90vh;
+}
+.editorial-intro-img {
+  position:relative; overflow:hidden;
+}
+.editorial-intro-img img { width:100%; height:100%; object-fit:cover; }
+.editorial-intro-img .overlay-caption {
+  position:absolute; bottom:2.5rem; left:2.5rem;
+  font-family:'Caveat',cursive; font-size:1.3rem;
+  color:white; text-shadow:0 1px 8px rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.25); padding:0.4rem 0.8rem;
+  border-radius:4px;
+}
+.editorial-intro-text {
+  background:var(--warm);
+  padding:5rem 4rem;
+  display:flex; flex-direction:column; justify-content:center;
+}
+.section-kicker {
+  font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase;
+  color:var(--rust); margin-bottom:1.2rem;
+  display:flex; align-items:center; gap:0.8rem;
+}
+.section-kicker::before { content:''; width:1.5rem; height:1px; background:var(--rust); display:block; }
+.editorial-intro-text h2 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,3.5vw,3rem); font-weight:600;
+  line-height:1.15; color:var(--ink); margin-bottom:1.8rem;
+}
+.editorial-intro-text h2 em { font-style:italic; color:var(--rust); }
+.body-para {
+  font-size:0.9rem; line-height:1.9; color:var(--muted);
+  margin-bottom:1.2rem;
+}
+.pull-quote {
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic; font-size:1.5rem;
+  color:var(--ink); line-height:1.4;
+  border-top:2px solid var(--sand);
+  border-bottom:2px solid var(--sand);
+  padding:1.5rem 0; margin:2rem 0;
+}
+
+/* ── ROUTE: HORIZONTAL FILM STRIP ── */
+.route-section { padding:6rem 0; background:var(--paper); overflow:hidden; }
+.route-header { padding:0 4rem 3rem; }
+.route-header h2 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.5rem,4vw,3.8rem); font-weight:700; color:var(--ink);
+  line-height:1;
+}
+.route-header h2 em { font-style:italic; color:var(--forest); }
+
+.film-strip {
+  display:flex; overflow-x:auto; gap:0;
+  padding:0 4rem 2rem;
+  scrollbar-width:thin; scrollbar-color:var(--sand) transparent;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+.film-strip::-webkit-scrollbar { height:4px; }
+.film-strip::-webkit-scrollbar-track { background:transparent; }
+.film-strip::-webkit-scrollbar-thumb { background:var(--sand); border-radius:2px; }
+
+.film-frame {
+  flex:0 0 320px; scroll-snap-align:start;
+  position:relative; margin-right:1.5rem;
+  background:white;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+  border-radius:2px;
+  overflow:hidden;
+}
+.film-frame-img { width:100%; height:220px; object-fit:cover; display:block; }
+.film-frame-body { padding:1.5rem; }
+.film-time {
+  font-family:'Caveat',cursive; font-size:1.1rem;
+  color:var(--rust); margin-bottom:0.3rem;
+}
+.film-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem; font-weight:600; color:var(--ink);
+  margin-bottom:0.5rem;
+}
+.film-desc { font-size:0.78rem; line-height:1.7; color:var(--muted); }
+.film-badge {
+  position:absolute; top:1rem; right:1rem;
+  background:var(--rust); color:white;
+  font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.25rem 0.6rem; border-radius:100px;
+}
+
+/* ── SPOTS: EDITORIAL MAGAZINE GRID ── */
+.spots-section { padding:6rem 4rem; background:var(--warm); }
+.spots-section > .section-kicker { margin-bottom:0.5rem; }
+.spots-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.5rem,4vw,4rem); font-weight:700;
+  line-height:0.95; color:var(--ink); margin-bottom:3.5rem;
+}
+.spots-title em { font-style:italic; color:var(--forest); display:block; }
+
+/* Asymmetric magazine layout */
+.spots-bento {
+  display:grid;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  grid-template-rows: 420px 300px 360px;
+  gap:1rem;
+}
+.bento-card {
+  position:relative; overflow:hidden; border-radius:4px;
+  cursor:default;
+}
+.bento-card img {
+  width:100%; height:100%; object-fit:cover;
+  transition: transform 0.6s ease, filter 0.4s ease;
+  filter: saturate(0.9);
+}
+.bento-card:hover img { transform:scale(1.04); filter:saturate(1.1); }
+.bento-card .card-overlay {
+  position:absolute; inset:0;
+  background: linear-gradient(to top, rgba(28,20,16,0.85) 0%, rgba(28,20,16,0.1) 55%, transparent 100%);
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:1.8rem;
+  transition: background 0.3s;
+}
+.bento-card:hover .card-overlay {
+  background: linear-gradient(to top, rgba(28,20,16,0.9) 0%, rgba(28,20,16,0.2) 55%, transparent 100%);
+}
+.card-tag {
+  font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase;
+  color:rgba(255,255,255,0.65); margin-bottom:0.4rem;
+}
+.card-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem; font-weight:700; color:white; line-height:1.1;
+  margin-bottom:0.5rem;
+}
+.card-desc { font-size:0.76rem; line-height:1.6; color:rgba(255,255,255,0.75); }
+.card-tip {
+  margin-top:0.8rem; padding:0.6rem 0.8rem;
+  background:rgba(181,82,26,0.7); border-radius:3px;
+  font-family:'Caveat',cursive; font-size:0.85rem; color:rgba(255,255,255,0.95);
+  display:none;
+}
+.bento-card:hover .card-tip { display:block; }
+.card-stars { margin-bottom:0.3rem; font-size:0.8rem; color:var(--ochre); }
+
+/* Grid placements */
+.bento-card.b1 { grid-column:1; grid-row:1/3; }
+.bento-card.b2 { grid-column:2; grid-row:1; }
+.bento-card.b3 { grid-column:3; grid-row:1; }
+.bento-card.b4 { grid-column:2/4; grid-row:2; }
+.bento-card.b5 { grid-column:1; grid-row:3; }
+.bento-card.b6 { grid-column:2; grid-row:3; }
+.bento-card.b7 { grid-column:3; grid-row:3; }
+
+/* ── SHOT COMPOSITIONS: POLAROID SCATTER ── */
+.shots-section {
+  padding:7rem 4rem;
+  background: var(--paper);
+  position:relative;
+}
+.shots-section::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0;
+  height:4px;
+  background: repeating-linear-gradient(90deg, var(--rust) 0, var(--rust) 20px, transparent 20px, transparent 40px);
+}
+.shots-header { text-align:center; margin-bottom:5rem; }
+.shots-header h2 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.5rem,4vw,3.8rem); font-weight:700; color:var(--ink);
+}
+.shots-header h2 em { font-style:italic; color:var(--rust); }
+.shots-header p { font-size:0.88rem; color:var(--muted); margin-top:0.8rem; max-width:55ch; margin-inline:auto; line-height:1.8; }
+
+.shots-grid {
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:3rem 2rem;
+}
+.shot-polaroid {
+  background:white;
+  padding:1rem 1rem 2.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position:relative;
+}
+.shot-polaroid:nth-child(2n) { transform: rotate(-1.5deg); margin-top:1.5rem; }
+.shot-polaroid:nth-child(3n) { transform: rotate(1deg); }
+.shot-polaroid:nth-child(5n) { transform: rotate(-0.8deg); margin-top:-1rem; }
+.shot-polaroid:hover { transform:rotate(0) scale(1.03) !important; box-shadow:0 12px 40px rgba(0,0,0,0.15); z-index:10; }
+.shot-polaroid-img {
+  width:100%; height:180px; object-fit:cover;
+  display:block; margin-bottom:0.8rem;
+  background: var(--warm);
+  overflow:hidden; position:relative;
+}
+/* ASCII diagram inside polaroid */
+.shot-diagram {
+  width:100%; height:180px;
+  background: var(--warm);
+  display:flex; align-items:center; justify-content:center;
+  font-family:monospace; font-size:0.68rem; line-height:1.8;
+  color:var(--forest); white-space:pre; text-align:center;
+  margin-bottom:0.8rem;
+}
+.shot-label {
+  font-family:'Caveat',cursive; font-size:0.9rem;
+  color:var(--muted); text-align:center; margin-bottom:0.2rem;
+}
+.shot-name-pol {
+  font-family:'Cormorant Garamond',serif;
+  font-weight:600; font-size:1rem; color:var(--ink);
+  text-align:center; margin-bottom:0.5rem;
+}
+.shot-tip-pol { font-size:0.73rem; line-height:1.6; color:var(--muted); }
+.pin {
+  position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+  width:14px; height:14px; border-radius:50%;
+  background:var(--rust); border:2px solid white;
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* ── GEAR TABLE ── */
+.gear-section {
+  background:var(--ink); color:var(--paper);
+  padding:6rem 4rem;
+}
+.gear-section .section-kicker { color:var(--ochre); }
+.gear-section .section-kicker::before { background:var(--ochre); }
+.gear-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.5rem,4vw,4rem); font-weight:700;
+  color:var(--paper); line-height:0.95; margin-bottom:3rem;
+}
+.gear-title em { font-style:italic; color:var(--ochre); }
+.gear-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.08);
+}
+.gear-col {
+  background:rgba(28,20,16,0.9); padding:2rem 1.5rem;
+}
+.gear-col-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.2rem; font-weight:600; color:var(--ochre);
+  margin-bottom:1.5rem;
+  padding-bottom:0.8rem;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.gear-row {
+  display:flex; align-items:flex-start; gap:0.7rem;
+  padding:0.6rem 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  font-size:0.82rem; color:rgba(247,242,234,0.75);
+}
+.gear-row .gi { font-size:1rem; flex-shrink:0; }
+.gear-row.bad { color:rgba(193,59,27,0.7); }
+
+/* ── VIDEO STRUCTURE: TIMELINE SCROLL ── */
+.video-section {
+  padding:7rem 4rem;
+  background: var(--warm);
+  position:relative;
+  overflow:hidden;
+}
+.video-bg-text {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Cormorant Garamond',serif;
+  font-size:18vw; font-weight:700; font-style:italic;
+  color:rgba(0,0,0,0.025); pointer-events:none;
+  white-space:nowrap;
+}
+.video-section h2 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.5rem,4vw,3.8rem); font-weight:700;
+  color:var(--ink); margin-bottom:4rem; position:relative;
+}
+.video-section h2 em { font-style:italic; color:var(--forest); }
+
+.vid-timeline {
+  display:grid; grid-template-columns:1fr;
+  gap:0; position:relative;
+}
+.vid-timeline::before {
+  content:''; position:absolute; left:6rem; top:0; bottom:0;
+  width:1px; background:var(--sand);
+}
+.vid-row {
+  display:grid; grid-template-columns:6rem 1fr;
+  gap:2rem; padding:2rem 0;
+  border-bottom:1px solid var(--sand);
+  align-items:start;
+  transition:background 0.2s;
+}
+.vid-row:hover { background:rgba(247,242,234,0.7); }
+.vid-row:last-child { border-bottom:none; }
+.vid-ts {
+  text-align:right; padding-right:2rem;
+  font-family:'Caveat',cursive; font-size:1.1rem;
+  color:var(--rust); padding-top:0.2rem;
+  position:relative;
+}
+.vid-ts::after {
+  content:''; position:absolute; right:-1px; top:0.55rem;
+  width:9px; height:9px; border-radius:50%;
+  background:var(--rust); transform:translateX(50%);
+}
+.vid-content {}
+.vid-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.35rem; font-weight:600; color:var(--ink);
+  margin-bottom:0.4rem;
+}
+.vid-desc { font-size:0.82rem; line-height:1.8; color:var(--muted); }
+.vid-note {
+  display:inline-block; margin-top:0.6rem;
+  font-family:'Caveat',cursive; font-size:0.88rem;
+  color:var(--forest); background:rgba(59,94,58,0.08);
+  padding:0.25rem 0.7rem; border-radius:100px;
+}
+
+/* ── AUDIO: VISUAL SOUND TILES ── */
+.audio-section {
+  padding:5rem 4rem;
+  background:var(--paper);
+  border-top: 4px solid var(--forest);
+}
+.audio-grid {
+  display:grid; grid-template-columns:repeat(5,1fr);
+  gap:1rem; margin-top:3rem;
+}
+.audio-tile {
+  aspect-ratio:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:0.6rem;
+  border:1px solid var(--sand); border-radius:8px;
+  background:var(--warm); text-align:center;
+  transition:all 0.25s; cursor:default; padding:1rem;
+}
+.audio-tile:hover {
+  background:var(--forest); border-color:var(--forest);
+  transform:translateY(-3px);
+  box-shadow:0 8px 24px rgba(59,94,58,0.2);
+}
+.audio-tile .at-icon { font-size:1.8rem; }
+.audio-tile .at-label {
+  font-size:0.7rem; line-height:1.4; letter-spacing:0.05em;
+  color:var(--muted); text-transform:uppercase;
+}
+.audio-tile:hover .at-label { color:rgba(255,255,255,0.8); }
+.audio-tip {
+  font-family:'Caveat',cursive; font-size:1rem; color:var(--forest);
+  text-align:center; margin-top:2rem;
+}
+
+/* ── MAP SECTION ── */
+.map-section { padding:6rem 4rem; background:var(--warm); }
+.map-section h2 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,3.5vw,3.5rem); font-weight:700; color:var(--ink);
+  margin-bottom:2.5rem;
+}
+.map-section h2 em { font-style:italic; color:var(--rust); }
+.map-wrapper {
+  display:grid; grid-template-columns:1fr 2fr; gap:2rem; align-items:start;
+}
+.map-stops-list { display:flex; flex-direction:column; gap:0.8rem; }
+.ms-item {
+  display:flex; align-items:flex-start; gap:1rem;
+  padding:1rem 1.2rem; border-radius:6px;
+  background:white; border:1px solid var(--sand);
+  cursor:pointer; transition:all 0.2s;
+}
+.ms-item:hover, .ms-item.active {
+  border-color:var(--rust); background:rgba(181,82,26,0.04);
+}
+.ms-dot {
+  width:28px; height:28px; border-radius:50%;
+  background:var(--rust); color:white;
+  font-size:0.65rem; font-weight:600;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.ms-info .ms-name { font-size:0.88rem; font-weight:500; color:var(--ink); }
+.ms-info .ms-sub { font-size:0.72rem; color:var(--muted); margin-top:0.15rem; }
+#mapEmbed {
+  border-radius:8px; overflow:hidden;
+  border:1px solid var(--sand);
+  width:100%; height:480px;
+}
+#mapEmbed iframe { width:100%; height:100%; border:none; }
+.map-fallback {
+  width:100%; height:480px; border-radius:8px;
+  background:var(--warm); border:1px solid var(--sand);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:1rem; color:var(--muted);
+}
+.map-fallback-title {
+  font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:var(--ink);
+}
+.map-coords {
+  display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;
+  width:100%; padding:1rem; max-width:400px;
+}
+.coord-item {
+  background:white; border:1px solid var(--sand); border-radius:4px;
+  padding:0.8rem; text-align:center;
+}
+.coord-num { font-family:'Caveat',cursive; font-size:0.8rem; color:var(--rust); }
+.coord-lbl { font-size:0.65rem; color:var(--muted); letter-spacing:0.05em; }
+
+/* ── PACKING ── */
+.pack-section {
+  background:var(--rust); padding:5rem 4rem;
+}
+.pack-section h2 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,3vw,3rem); font-weight:700;
+  color:white; margin-bottom:2.5rem;
+}
+.pack-section h2 em { font-style:italic; }
+.pack-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:0.8rem;
+}
+.pack-item {
+  display:flex; align-items:center; gap:0.8rem;
+  padding:0.9rem 1.1rem; border-radius:4px;
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.15);
+  font-size:0.82rem; color:rgba(255,255,255,0.9);
+  transition:background 0.2s;
+}
+.pack-item:hover { background:rgba(255,255,255,0.22); }
+.pack-item .pi { font-size:1rem; }
+
+/* ── FOOTER ── */
+footer {
+  background:var(--ink); padding:4rem 4rem;
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:2rem; align-items:center;
+}
+.footer-logo {
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic; font-size:2rem; color:var(--ochre);
+}
+.footer-center {
+  text-align:center; font-size:0.72rem;
+  letter-spacing:0.1em; color:rgba(247,242,234,0.4);
+  line-height:1.8;
+}
+.footer-tags {
+  text-align:right; font-family:'Caveat',cursive;
+  font-size:1rem; color:var(--ochre); opacity:0.7; line-height:1.8;
+}
+
+/* ── SCROLL REVEAL ── */
+.sr { opacity:0; transform:translateY(30px); transition:opacity 0.7s ease, transform 0.7s ease; }
+.sr.in { opacity:1; transform:none; }
+.sr-delay-1 { transition-delay:0.1s; }
+.sr-delay-2 { transition-delay:0.2s; }
+.sr-delay-3 { transition-delay:0.3s; }
+
+@media(max-width:900px){
+  nav { padding:1rem 1.5rem; }
+  .nav-links { display:none; }
+  .hero { grid-template-columns:1fr; }
+  .hero-img-side { height:50vh; }
+  .hero-text-side { padding:3rem 2rem; }
+  .editorial-intro { grid-template-columns:1fr; }
+  .editorial-intro-img { height:50vw; }
+  .spots-bento { grid-template-columns:1fr 1fr; grid-template-rows:auto; }
+  .bento-card.b1,.bento-card.b4 { grid-column:1/3; }
+  .bento-card.b2,.bento-card.b3,.bento-card.b5,.bento-card.b6,.bento-card.b7 { grid-column:span 1; }
+  .shots-grid { grid-template-columns:1fr 1fr; }
+  .gear-grid { grid-template-columns:1fr 1fr; }
+  .audio-grid { grid-template-columns:repeat(3,1fr); }
+  .map-wrapper { grid-template-columns:1fr; }
+  footer { grid-template-columns:1fr; text-align:center; }
+  .footer-tags { text-align:center; }
+}
+@media(max-width:600px){
+  .shots-grid { grid-template-columns:1fr; }
+  .gear-grid { grid-template-columns:1fr; }
+  .audio-grid { grid-template-columns:repeat(2,1fr); }
+  .spots-bento { grid-template-columns:1fr; }
+  .bento-card.b1,.bento-card.b4 { grid-column:1; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <span class="nav-logo">Pavagadh Diaries</span>
+  <ul class="nav-links">
+    <li><a href="#route">Route</a></li>
+    <li><a href="#spots">Spots</a></li>
+    <li><a href="#shots">Shot List</a></li>
+    <li><a href="#gear">Gear</a></li>
+    <li><a href="#video">Edit</a></li>
+    <li><a href="#map">Map</a></li>
+  </ul>
+</nav>
+
+<!-- HERO: SPLIT SCREEN -->
+<section class="hero">
+  <div class="hero-img-side">
+    <img
+      src="https://images.unsplash.com/photo-1600298881974-6be191ceeda1?w=1200&q=85"
+      alt="Pavagadh hill landscape"
+      id="heroImg"
+      onload="this.classList.add('loaded')"
+    >
+  </div>
+  <div class="hero-text-side">
+    <div class="hero-stamp">
+      <span class="s1">Solo Ride</span>
+      <span class="s2">180km</span>
+      <span class="s3">Gujarat</span>
+    </div>
+    <div class="hero-eyebrow">Ahmedabad → Pavagadh</div>
+    <h1>
+      Pavagadh
+      <span>Diaries</span>
+    </h1>
+    <p class="hero-desc">
+      One rider. One phone. A gorilla tripod. And a UNESCO heritage hill that most people only visit for the temple — but you're going to film like a documentarian.
+    </p>
+    <div class="hero-chips">
+      <span class="chip">4:30 AM Departure</span>
+      <span class="chip">Sultanpura Trek</span>
+      <span class="chip">Samsung S21 FE</span>
+      <span class="chip">TVS Raider</span>
+      <span class="chip">UNESCO Zone</span>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <span class="ticker-inner">
+    &nbsp;&nbsp; Pavagadh Diaries &nbsp;·&nbsp; Solo Moto Journey &nbsp;·&nbsp; Champaner UNESCO Heritage &nbsp;·&nbsp; Sultanpura Trek &nbsp;·&nbsp; Helical Stepwell &nbsp;·&nbsp; Kevada Masjid &nbsp;·&nbsp; Saat Kaman &nbsp;·&nbsp; Samsung S21 FE &nbsp;·&nbsp; TVS Raider &nbsp;·&nbsp; Golden Hour &nbsp;·&nbsp; 180 km Round Trip &nbsp;·&nbsp; Gujarat India &nbsp;·&nbsp;
+    &nbsp;&nbsp; Pavagadh Diaries &nbsp;·&nbsp; Solo Moto Journey &nbsp;·&nbsp; Champaner UNESCO Heritage &nbsp;·&nbsp; Sultanpura Trek &nbsp;·&nbsp; Helical Stepwell &nbsp;·&nbsp; Kevada Masjid &nbsp;·&nbsp; Saat Kaman &nbsp;·&nbsp; Samsung S21 FE &nbsp;·&nbsp; TVS Raider &nbsp;·&nbsp; Golden Hour &nbsp;·&nbsp; 180 km Round Trip &nbsp;·&nbsp; Gujarat India &nbsp;·&nbsp;
+  </span>
+</div>
+
+<!-- EDITORIAL INTRO -->
+<section class="editorial-intro">
+  <div class="editorial-intro-img">
+    <img
+      src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900&q=80"
+      alt="Mountain trek morning light"
+    >
+    <div class="overlay-caption">✦ Shot on tripod, alone, at 7 AM</div>
+  </div>
+  <div class="editorial-intro-text">
+    <div class="section-kicker">The Idea</div>
+    <h2>Don't shoot a vlog.<br>Shoot a <em>documentary.</em></h2>
+    <p class="body-para">
+      The difference between a travel vlog and a travel documentary isn't the camera — it's the intention. Every frame should justify its existence. Every clip should carry weight. You're not filming what you see. You're constructing how the viewer feels.
+    </p>
+    <p class="body-para">
+      With a Samsung S21 FE, a gorilla tripod, and a shutter remote, you already own everything you need to make a video that looks like a crew of five made it. The Sultanpura trail alone, shot right, is your main story.
+    </p>
+    <blockquote class="pull-quote">
+      "The secret is the 8-second clip discipline. Pro creators don't shoot minutes. They shoot moments."
+    </blockquote>
+    <p class="body-para">
+      The Champaner–Pavagadh archaeological zone is a UNESCO World Heritage Site — a complete medieval city frozen in stone. Most visitors walk past 15 centuries of architecture on the way to the temple. Your camera is going to find it.
+    </p>
+  </div>
+</section>
+
+<!-- ROUTE FILM STRIP -->
+<section class="route-section" id="route">
+  <div class="route-header sr">
+    <div class="section-kicker">Ideal Route · One Day</div>
+    <h2>The Journey,<br><em>Frame by Frame</em></h2>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:0.8rem;">Scroll → to follow the day</p>
+  </div>
+
+  <div class="film-strip">
+
+    <div class="film-frame sr">
+      <img class="film-frame-img"
+        src="https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=600&q=75"
+        alt="Night city departure" loading="lazy">
+      <span class="film-badge">Home</span>
+      <div class="film-frame-body">
+        <div class="film-time">4:30 AM</div>
+        <div class="film-title">Ahmedabad Departure</div>
+        <div class="film-desc">Full tank. Empty storage. City sleeping. Tripod on ground — walk toward your bike. This is Shot 1. Key insertion next. Then ride away wide.</div>
+      </div>
+    </div>
+
+    <div class="film-frame sr sr-delay-1">
+      <img class="film-frame-img"
+        src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600&q=75"
+        alt="Highway sunrise" loading="lazy">
+      <span class="film-badge">Highway</span>
+      <div class="film-frame-body">
+        <div class="film-time">~5:30 AM</div>
+        <div class="film-title">The Open Highway</div>
+        <div class="film-desc">Expressway to Halol. Shoot mirror reflection, speedometer, hand on throttle. Wide road at sunrise. No one else around.</div>
+      </div>
+    </div>
+
+    <div class="film-frame sr sr-delay-2">
+      <img class="film-frame-img"
+        src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&q=75"
+        alt="Chai stop steam" loading="lazy">
+      <span class="film-badge">Tea Stop</span>
+      <div class="film-frame-body">
+        <div class="film-time">~6:00 AM</div>
+        <div class="film-title">Roadside Chai</div>
+        <div class="film-desc">Steam from the glass. Biscuit dipping. Bike visible through the dhaba window. Record ambient sound separately here — it's gold in the edit.</div>
+      </div>
+    </div>
+
+    <div class="film-frame sr sr-delay-3">
+      <img class="film-frame-img"
+        src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&q=75"
+        alt="Forest trail morning" loading="lazy">
+      <span class="film-badge">Trek</span>
+      <div class="film-frame-body">
+        <div class="film-time">6:45 AM</div>
+        <div class="film-title">Sultanpura Trek</div>
+        <div class="film-desc">Park near Sultanpura village (FGP3+WGM). Start before the sun turns harsh. This is the heart of your video. 11 shots planned here alone.</div>
+      </div>
+    </div>
+
+    <div class="film-frame sr">
+      <img class="film-frame-img"
+        src="https://images.unsplash.com/photo-1564507592333-c60657eea523?w=600&q=75"
+        alt="Ancient mosque arches" loading="lazy">
+      <span class="film-badge">Heritage</span>
+      <div class="film-frame-body">
+        <div class="film-time">9:00 AM</div>
+        <div class="film-title">Heritage Circuit</div>
+        <div class="film-desc">Helical Stepwell → Kevada Masjid → Nagina Masjid → Atak Gate → Sakar Khan Dargah. Shoot and move. 8 seconds per clip, always.</div>
+      </div>
+    </div>
+
+    <div class="film-frame sr sr-delay-1">
+      <img class="film-frame-img"
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=75"
+        alt="Mountain viewpoint panorama" loading="lazy">
+      <span class="film-badge">Views</span>
+      <div class="film-frame-body">
+        <div class="film-time">12:00 PM</div>
+        <div class="film-title">Pavagadh Viewpoints</div>
+        <div class="film-desc">Saat Kaman arches. You + Raider + mountain = thumbnail. Wide shot, yourself on left third, mountain filling the right frame.</div>
+      </div>
+    </div>
+
+    <div class="film-frame sr sr-delay-2">
+      <img class="film-frame-img"
+        src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=75"
+        alt="Golden hour lake reflection" loading="lazy">
+      <span class="film-badge">Lake</span>
+      <div class="film-frame-body">
+        <div class="film-time">~3:00 PM</div>
+        <div class="film-title">Lake Reflections</div>
+        <div class="film-desc">Tripod 2 inches from the water. Walk parallel to shore. Speed 2× in CapCut for a drone-like effect. Golden hour only — come prepared.</div>
+      </div>
+    </div>
+
+    <div class="film-frame sr sr-delay-3">
+      <img class="film-frame-img"
+        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=75"
+        alt="Sunset silhouette" loading="lazy">
+      <span class="film-badge">Sunset</span>
+      <div class="film-frame-body">
+        <div class="film-time">Sunset</div>
+        <div class="film-title">The Emotional Close</div>
+        <div class="film-desc">Sit. Helmet beside you. Side profile. No talking. No narration. Just the wind and the sky. Hold 10 seconds. This is your ending.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SPOTS BENTO GRID -->
+<section class="spots-section" id="spots">
+  <div class="section-kicker sr">Your Saved Places</div>
+  <h2 class="spots-title sr">
+    7 Spots.
+    <em>Zero Excuses.</em>
+  </h2>
+
+  <div class="spots-bento">
+
+    <!-- Helical Stepwell — HERO CARD -->
+    <div class="bento-card b1 sr">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="Helical Stepwell" loading="lazy">
+      <div class="card-overlay">
+        <div class="card-stars">⭐⭐⭐⭐⭐</div>
+        <div class="card-tag">Must Shoot · Ancient Architecture</div>
+        <div class="card-name">Helical Stepwell</div>
+        <div class="card-desc">Ancient spiral geometry. Shadows that rotate with the sun. Built in the 16th century. Stand exactly in center — symmetry composition.</div>
+        <div class="card-tip">📐 Walk downstairs slowly while camera is fixed above. The spiral pulls the eye in like nothing else you'll shoot all day.</div>
+      </div>
+    </div>
+
+    <!-- Kevada Masjid -->
+    <div class="bento-card b2 sr sr-delay-1">
+      <img src="https://images.unsplash.com/photo-1564507592333-c60657eea523?w=600&q=80" alt="Kevada Masjid" loading="lazy">
+      <div class="card-overlay">
+        <div class="card-stars">⭐⭐⭐⭐⭐</div>
+        <div class="card-tag">Underrated Gem</div>
+        <div class="card-name">Kevada Masjid</div>
+        <div class="card-desc">15th-century Indo-Islamic arches. Natural frames built into the structure.</div>
+        <div class="card-tip">🕌 Walk through arches slow-motion. Use pillars as leading lines. No crowds = full freedom.</div>
+      </div>
+    </div>
+
+    <!-- Pavagadh Viewpoint -->
+    <div class="bento-card b3 sr sr-delay-2">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Pavagadh Viewpoint" loading="lazy">
+      <div class="card-overlay">
+        <div class="card-stars">⭐⭐⭐⭐⭐</div>
+        <div class="card-tag">Thumbnail Shot</div>
+        <div class="card-name">Saat Kaman & Viewpoint</div>
+        <div class="card-desc">Seven stone arches + panoramic mountain. Your cover shot lives here.</div>
+        <div class="card-tip">📸 You left-third. Mountain fills the right. "Solo Ride to Pavagadh" text card later.</div>
+      </div>
+    </div>
+
+    <!-- Atak Gate + Nagina Masjid span -->
+    <div class="bento-card b4 sr sr-delay-1">
+      <img src="https://images.unsplash.com/photo-1583423230902-9a1d024e5b01?w=900&q=80" alt="Atak Gate" loading="lazy">
+      <div class="card-overlay">
+        <div class="card-stars">⭐⭐⭐⭐</div>
+        <div class="card-tag">13th Century · History Vibe</div>
+        <div class="card-name">Atak Gate</div>
+        <div class="card-desc">Built by Khichi Chauhan Rajputs. Two gateways, 73 trapezoidal catapult stones. Bike parked beside it — side profile, center composition. The "entering another era" shot.</div>
+        <div class="card-tip">🏍️ Place the Raider beside the gate for scale. This gives the historical context and cinematic weight to your video's middle act.</div>
+      </div>
+    </div>
+
+    <!-- Lake -->
+    <div class="bento-card b5 sr">
+      <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=80" alt="Lake reflections" loading="lazy">
+      <div class="card-overlay">
+        <div class="card-stars">⭐⭐⭐⭐⭐</div>
+        <div class="card-tag">Golden Hour Only</div>
+        <div class="card-name">Lake Area</div>
+        <div class="card-desc">Morning water = mirror. Tripod nearly touching the surface.</div>
+        <div class="card-tip">🌊 Speed 2× in CapCut = fake drone shot. Walk parallel to shore.</div>
+      </div>
+    </div>
+
+    <!-- Nagina Masjid -->
+    <div class="bento-card b6 sr sr-delay-1">
+      <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80" alt="Nagina Masjid" loading="lazy">
+      <div class="card-overlay">
+        <div class="card-stars">⭐⭐⭐⭐</div>
+        <div class="card-tag">Less Crowded</div>
+        <div class="card-name">Nagina Masjid</div>
+        <div class="card-desc">Beautiful stone carvings. Go ultra-low angle — sky in the top half.</div>
+        <div class="card-tip">📷 0.6x wide. Camera on ground pointing up. Shoot vertical for reels.</div>
+      </div>
+    </div>
+
+    <!-- Waterfall Bonus -->
+    <div class="bento-card b7 sr sr-delay-2">
+      <img src="https://images.unsplash.com/photo-1455218873509-8097305ee378?w=600&q=80" alt="Waterfall" loading="lazy">
+      <div class="card-overlay" style="background:linear-gradient(to top, rgba(59,94,58,0.9) 0%, rgba(59,94,58,0.1) 55%, transparent 100%);">
+        <div class="card-tag" style="color:rgba(255,255,255,0.7)">🌿 Monsoon Bonus</div>
+        <div class="card-name">Gupateshwar Waterfall</div>
+        <div class="card-desc">Monsoon only. Lush forest + falling water = your most-rewatched clip.</div>
+        <div class="card-tip" style="background:rgba(59,94,58,0.7)">🌧️ 60fps slow-motion. Phone in plastic bag. Worth a dedicated revisit.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SHOT LIST: POLAROIDS -->
+<section class="shots-section" id="shots">
+  <div class="shots-header">
+    <div class="section-kicker" style="justify-content:center">Solo Creator · Gorilla Tripod + Remote</div>
+    <h2>The Shot List.<br><em>Where to Stand. Where to Aim.</em></h2>
+    <p>Every frame below is designed for one person with no crew. Hover to see the tip. The goal is to make your video look like someone was filming you.</p>
+  </div>
+
+  <div class="shots-grid">
+
+    <div class="shot-polaroid sr">
+      <div class="pin"></div>
+      <div class="shot-diagram">      📷
+       |  (15 ft)
+       |
+  YOU ──── Bike
+  [Walk in. Wear helmet. Start bike.]</div>
+      <div class="shot-label">Shot 01 · Home</div>
+      <div class="shot-name-pol">Hero Entrance</div>
+      <div class="shot-tip-pol">Tripod 15 ft away on ground. Walk into frame, don helmet, start engine. 8 seconds. Wide lens. Sets the documentary tone immediately.</div>
+    </div>
+
+    <div class="shot-polaroid sr sr-delay-1">
+      <div class="pin"></div>
+      <div class="shot-diagram">  📷 → Hand
+         ↓
+     Key in ignition
+     Raider logo
+     Speedometer glow</div>
+      <div class="shot-label">Shot 02 · Home</div>
+      <div class="shot-name-pol">Key Insertion</div>
+      <div class="shot-tip-pol">Macro close-up. Fill the whole frame with just the key and the logo. No wide. Pure texture and cinematic weight.</div>
+    </div>
+
+    <div class="shot-polaroid sr sr-delay-2">
+      <div class="pin"></div>
+      <div class="shot-diagram">   📷 (fixed roadside)
+    |
+Road ──────────────→
+    YOU riding away
+    [0.6x ultra-wide]</div>
+      <div class="shot-label">Shot 03 · Highway</div>
+      <div class="shot-name-pol">Ride Away</div>
+      <div class="shot-tip-pol">Camera on road shoulder. Let yourself shrink into the distance. One of the most powerful solo shots possible.</div>
+    </div>
+
+    <div class="shot-polaroid sr">
+      <div class="pin"></div>
+      <div class="shot-diagram">  Mountain background
+
+  YOU ──────────→
+
+  📷 on rock
+  (waist height)</div>
+      <div class="shot-label">Shot 04 · Sultanpura Trek</div>
+      <div class="shot-name-pol">Walking Past Camera</div>
+      <div class="shot-tip-pol">Walk naturally. Don't look at camera. Hold shot until fully out of frame. Shoot 60fps → slow down in CapCut.</div>
+    </div>
+
+    <div class="shot-polaroid sr sr-delay-1">
+      <div class="pin"></div>
+      <div class="shot-diagram">  [Grass / Rock / Path]
+
+  ──── your feet ────→
+
+  📷 only 6 inches
+  from ground</div>
+      <div class="shot-label">Shot 05 · Trek</div>
+      <div class="shot-name-pol">Feet Shot</div>
+      <div class="shot-tip-pol">Tripod almost on the ground. Feet fill bottom third. "I was really here" energy. Works on any terrain.</div>
+    </div>
+
+    <div class="shot-polaroid sr sr-delay-2">
+      <div class="pin"></div>
+      <div class="shot-diagram">  Vast valley + mountain
+
+        YOU (tiny figure)
+
+  📷 — 20 feet back —</div>
+      <div class="shot-label">Shot 06 · Trek</div>
+      <div class="shot-name-pol">Long Lonely Shot</div>
+      <div class="shot-tip-pol">You should be tiny — dwarfed by the landscape. This creates the "solo adventure" feeling that makes viewers feel the journey.</div>
+    </div>
+
+    <div class="shot-polaroid sr">
+      <div class="pin"></div>
+      <div class="shot-diagram">  [Leaves / bushes]
+  📷 behind foreground
+     shallow blur →
+         YOU
+      Mountain</div>
+      <div class="shot-label">Shot 07 · Trek</div>
+      <div class="shot-name-pol">Epic Reveal</div>
+      <div class="shot-tip-pol">Foreground blur = instant cinematic quality. Any brush or leaf between lens and subject. The most impressive trick you can do solo.</div>
+    </div>
+
+    <div class="shot-polaroid sr sr-delay-1">
+      <div class="pin"></div>
+      <div class="shot-diagram">  📷 fixed at top
+       ↓
+    Spiral stairs
+       ↓
+    YOU walking
+    down slowly</div>
+      <div class="shot-label">Shot 08 · Helical Stepwell</div>
+      <div class="shot-name-pol">Spiral Descent</div>
+      <div class="shot-tip-pol">Camera at the top, fixed. You walk down into the geometry. The spiral does all the work. Potential thumbnail.</div>
+    </div>
+
+    <div class="shot-polaroid sr sr-delay-2">
+      <div class="pin"></div>
+      <div class="shot-diagram">  📷 at water level
+  ↕  ~2 inches up
+
+  YOU + reflection
+  (golden hour only)</div>
+      <div class="shot-label">Shot 09 · Lake</div>
+      <div class="shot-name-pol">Water Reflection</div>
+      <div class="shot-tip-pol">Calm morning water = mirror. Walk parallel to shore. The reflection doubles visual impact with zero extra effort.</div>
+    </div>
+
+    <div class="shot-polaroid sr">
+      <div class="pin"></div>
+      <div class="shot-diagram">   [ Setting sun ]
+
+   YOU sitting
+   helmet beside you
+   📷 — side angle —</div>
+      <div class="shot-label">Shot 10 · Sunset</div>
+      <div class="shot-name-pol">The Emotional Closer</div>
+      <div class="shot-tip-pol">No talking. No narration. Ambient sound only — wind, maybe a distant bell. Hold 10+ seconds. Your most powerful moment.</div>
+    </div>
+
+    <div class="shot-polaroid sr sr-delay-1" style="background:#FFF8F5">
+      <div class="pin" style="background:var(--forest)"></div>
+      <div class="shot-diagram" style="background:#F0F5F0; color:var(--forest)">  ❌  1 long 60-sec clip
+       [looks amateur]
+
+  ✅  8-sec focused clips
+       [looks professional]</div>
+      <div class="shot-label" style="color:var(--rust)">The Golden Rule</div>
+      <div class="shot-name-pol">8-Second Discipline</div>
+      <div class="shot-tip-pol">Pro creators shoot short. Hit record, count to 8, stop. Forces intentional framing. Gives your editor exactly what they need.</div>
+    </div>
+
+    <div class="shot-polaroid sr sr-delay-2" style="background:#F5FBF5">
+      <div class="pin" style="background:var(--forest)"></div>
+      <div class="shot-diagram" style="background:#EBF5EB; color:var(--forest)">  Arch framing:
+
+  | Pillar |  YOU  | Pillar |
+         📷</div>
+      <div class="shot-label" style="color:var(--forest)">Shot 11 · Kevada Masjid</div>
+      <div class="shot-name-pol">Arch Framing</div>
+      <div class="shot-tip-pol">Stand inside the arch. Camera outside shooting in. The arch frames you like a portrait studio. Background naturally blurs.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- GEAR SETTINGS -->
+<section class="gear-section" id="gear">
+  <div class="section-kicker sr">Samsung S21 FE · Settings</div>
+  <h2 class="gear-title sr">Phone Settings.<br><em>Film Results.</em></h2>
+  <div class="gear-grid sr">
+    <div class="gear-col">
+      <div class="gear-col-title">🎬 Main Footage</div>
+      <div class="gear-row"><span class="gi">▸</span>4K 30fps — primary mode always</div>
+      <div class="gear-row"><span class="gi">▸</span>Main rear lens for sharpness</div>
+      <div class="gear-row"><span class="gi">▸</span>0.6x ultra-wide for landscapes</div>
+      <div class="gear-row"><span class="gi">▸</span>Stabilization ON always</div>
+      <div class="gear-row"><span class="gi">▸</span>Manual exposure for golden hour</div>
+    </div>
+    <div class="gear-col">
+      <div class="gear-col-title">🎞️ Slow Motion</div>
+      <div class="gear-row"><span class="gi">▸</span>1080p 60fps for slo-mo clips</div>
+      <div class="gear-row"><span class="gi">▸</span>Hand touching grass</div>
+      <div class="gear-row"><span class="gi">▸</span>Walking past camera</div>
+      <div class="gear-row"><span class="gi">▸</span>Waterfall / water shots</div>
+      <div class="gear-row"><span class="gi">▸</span>Arch walk-through at Kevada</div>
+    </div>
+    <div class="gear-col">
+      <div class="gear-col-title">📸 Photos</div>
+      <div class="gear-row"><span class="gi">▸</span>3:4 ratio for Instagram</div>
+      <div class="gear-row"><span class="gi">▸</span>16:9 for YouTube thumbnails</div>
+      <div class="gear-row"><span class="gi">▸</span>Shoot RAW when possible</div>
+      <div class="gear-row"><span class="gi">▸</span>HDR OFF for natural look</div>
+      <div class="gear-row"><span class="gi">▸</span>Step into center of stepwell</div>
+    </div>
+    <div class="gear-col">
+      <div class="gear-col-title">⚠️ Avoid These</div>
+      <div class="gear-row bad"><span class="gi">✕</span>4K 60fps drains battery fast</div>
+      <div class="gear-row bad"><span class="gi">✕</span>Digital zoom kills quality</div>
+      <div class="gear-row bad"><span class="gi">✕</span>Auto-brightness in bright sun</div>
+      <div class="gear-row bad"><span class="gi">✕</span>Dirty lens — pack lens cloth</div>
+      <div class="gear-row bad"><span class="gi">✕</span>One-minute clips (amateur)</div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO STRUCTURE -->
+<section class="video-section" id="video">
+  <div class="video-bg-text">Edit</div>
+  <div class="section-kicker sr">Final Edit Structure</div>
+  <h2 class="sr">Your 13-Minute Video.<br><em>Sequence It Right.</em></h2>
+
+  <div class="vid-timeline">
+    <div class="vid-row sr">
+      <div class="vid-ts">0:00–0:20</div>
+      <div class="vid-content">
+        <div class="vid-title">Cold Open — Best Shots Only</div>
+        <div class="vid-desc">No context. No introduction. Just your 3–4 most cinematic frames — cut fast, no music yet or a single rising drone note. Make the viewer want to keep watching before they know what the video is even about.</div>
+        <span class="vid-note">🎬 No talking. Just visuals.</span>
+      </div>
+    </div>
+    <div class="vid-row sr">
+      <div class="vid-ts">0:20–2:00</div>
+      <div class="vid-content">
+        <div class="vid-title">The Departure</div>
+        <div class="vid-desc">Home shots → key ignition → ride away → highway B-roll (speedometer, mirror reflection, hand on throttle). Voiceover: "Started early from Ahmedabad for a solo ride to Pavagadh through the hidden Sultanpura trail."</div>
+        <span class="vid-note">🏍️ Music builds here</span>
+      </div>
+    </div>
+    <div class="vid-row sr">
+      <div class="vid-ts">2:00–6:00</div>
+      <div class="vid-content">
+        <div class="vid-title">Sultanpura Trek — Main Story</div>
+        <div class="vid-desc">This is the heart. All 11 trek shots. Feet, grass, long lonely frame, sitting on rocks. Minimal narration. Let the visuals breathe. This is where viewers decide to subscribe.</div>
+        <span class="vid-note">⛰️ Your most important 4 minutes</span>
+      </div>
+    </div>
+    <div class="vid-row sr">
+      <div class="vid-ts">6:00–8:00</div>
+      <div class="vid-content">
+        <div class="vid-title">Pavagadh Views + Saat Kaman</div>
+        <div class="vid-desc">Wide shots, bike beside mountain, Saat Kaman arches. Your thumbnail shot lives here. Energy picks up — quicker cuts, rising music.</div>
+        <span class="vid-note">📸 Thumbnail moment at 6:30</span>
+      </div>
+    </div>
+    <div class="vid-row sr">
+      <div class="vid-ts">8:00–11:00</div>
+      <div class="vid-content">
+        <div class="vid-title">Heritage Section</div>
+        <div class="vid-desc">Helical Stepwell, Kevada Masjid, Nagina Masjid, Atak Gate. Architecture + light + history. Keep cuts clean, ambient audio louder here. Let the places speak.</div>
+        <span class="vid-note">🏛️ Slow music. Wide cuts.</span>
+      </div>
+    </div>
+    <div class="vid-row sr">
+      <div class="vid-ts">11:00–13:00</div>
+      <div class="vid-content">
+        <div class="vid-title">Sunset + Ride Home</div>
+        <div class="vid-desc">Sit with helmet. No talking. Just ambient sound fading into emotional music. Ride home in fading light. Fade to black. Credits. Done.</div>
+        <span class="vid-note">🌅 No narration here. Trust the images.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIO TILES -->
+<section class="audio-section">
+  <div class="section-kicker sr">Sound Design</div>
+  <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3.2rem);font-weight:700;color:var(--ink);line-height:1.1;" class="sr">
+    Record These Separately.<br><em style="font-style:italic;color:var(--forest)">They Make Everything Sound Expensive.</em>
+  </h2>
+  <div class="audio-grid sr">
+    <div class="audio-tile"><span class="at-icon">🏍️</span><span class="at-label">Bike Starting</span></div>
+    <div class="audio-tile"><span class="at-icon">🍃</span><span class="at-label">Wind Through Trees</span></div>
+    <div class="audio-tile"><span class="at-icon">🐦</span><span class="at-label">Bird Calls at Dawn</span></div>
+    <div class="audio-tile"><span class="at-icon">👟</span><span class="at-label">Footsteps on Stone</span></div>
+    <div class="audio-tile"><span class="at-icon">🔔</span><span class="at-label">Temple Bells</span></div>
+    <div class="audio-tile"><span class="at-icon">☕</span><span class="at-label">Chai Being Poured</span></div>
+    <div class="audio-tile"><span class="at-icon">💧</span><span class="at-label">Waterfall</span></div>
+    <div class="audio-tile"><span class="at-icon">🛞</span><span class="at-label">Throttle Sound</span></div>
+    <div class="audio-tile"><span class="at-icon">🐒</span><span class="at-label">Wildlife / Monkeys</span></div>
+    <div class="audio-tile"><span class="at-icon">🌬️</span><span class="at-label">Silence at Summit</span></div>
+  </div>
+  <p class="audio-tip sr">✦ Layer these in CapCut over music. One technique. Instant filmmaker.</p>
+</section>
+
+<!-- MAP -->
+<section class="map-section" id="map">
+  <div class="section-kicker sr">Interactive Route Map</div>
+  <h2 class="sr">Every Stop.<br><em>Mapped.</em></h2>
+  <div class="map-wrapper sr">
+    <div class="map-stops-list">
+      <div class="ms-item active" onclick="updateMap('https://maps.google.com/maps?q=22.4908,73.5631&z=15&output=embed')">
+        <div class="ms-dot">1</div>
+        <div class="ms-info">
+          <div class="ms-name">Pavagadh Hill View Point</div>
+          <div class="ms-sub">Best sunset location · FHR7+87V</div>
+        </div>
+      </div>
+      <div class="ms-item" onclick="updateMap('https://maps.google.com/maps?q=22.4844,73.5177&z=16&output=embed')">
+        <div class="ms-dot">2</div>
+        <div class="ms-info">
+          <div class="ms-name">Helical Stepwell</div>
+          <div class="ms-sub">16th-century spiral · UNESCO zone</div>
+        </div>
+      </div>
+      <div class="ms-item" onclick="updateMap('https://maps.google.com/maps?q=22.4893,73.5335&z=16&output=embed')">
+        <div class="ms-dot">3</div>
+        <div class="ms-info">
+          <div class="ms-name">Kevada Masjid</div>
+          <div class="ms-sub">Hidden gem · Indo-Islamic arches</div>
+        </div>
+      </div>
+      <div class="ms-item" onclick="updateMap('https://maps.google.com/maps?q=22.4764,73.5326&z=16&output=embed')">
+        <div class="ms-dot">4</div>
+        <div class="ms-info">
+          <div class="ms-name">Atak Gate</div>
+          <div class="ms-sub">13th-century fortified entrance</div>
+        </div>
+      </div>
+      <div class="ms-item" onclick="updateMap('https://maps.google.com/maps?q=22.4854,73.5350&z=16&output=embed')">
+        <div class="ms-dot">5</div>
+        <div class="ms-info">
+          <div class="ms-name">Saat Kaman</div>
+          <div class="ms-sub">Seven arches + panoramic views</div>
+        </div>
+      </div>
+      <div class="ms-item" onclick="updateMap('https://maps.google.com/maps?q=22.5010,73.5210&z=15&output=embed')">
+        <div class="ms-dot">6</div>
+        <div class="ms-info">
+          <div class="ms-name">Sultanpura Trek Start</div>
+          <div class="ms-sub">FGP3+WGM · Park bike here</div>
+        </div>
+      </div>
+    </div>
+    <div id="mapEmbed">
+      <iframe
+        id="mapFrame"
+        src="https://maps.google.com/maps?q=22.4908,73.5631&z=14&output=embed"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- PACKING -->
+<section class="pack-section">
+  <div class="section-kicker sr" style="color:rgba(255,255,255,0.6)">Don't Leave Without These</div>
+  <h2 class="sr">Packing List.<br><em>Things People Regret.</em></h2>
+  <div class="pack-grid sr">
+    <div class="pack-item"><span class="pi">🔋</span> Power bank (full charge)</div>
+    <div class="pack-item"><span class="pi">💧</span> 2–3 litres water</div>
+    <div class="pack-item"><span class="pi">🧂</span> ORS sachets</div>
+    <div class="pack-item"><span class="pi">👕</span> Extra T-shirt</div>
+    <div class="pack-item"><span class="pi">🧦</span> Extra socks</div>
+    <div class="pack-item"><span class="pi">🌂</span> Rain cover</div>
+    <div class="pack-item"><span class="pi">🧽</span> Lens cloth</div>
+    <div class="pack-item"><span class="pi">🛍️</span> Plastic bag for electronics</div>
+    <div class="pack-item"><span class="pi">🗺️</span> Offline maps downloaded</div>
+    <div class="pack-item"><span class="pi">📱</span> Empty phone storage</div>
+    <div class="pack-item"><span class="pi">🏍️</span> Tyre pressure checked</div>
+    <div class="pack-item"><span class="pi">⛽</span> Full fuel tank</div>
+    <div class="pack-item"><span class="pi">🥜</span> Dry fruits / snacks</div>
+    <div class="pack-item"><span class="pi">🩺</span> Basic first aid kit</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Pavagadh Diaries</div>
+  <div class="footer-center">
+    Solo Moto · Ahmedabad → Pavagadh<br>
+    Samsung S21 FE + Gorilla Tripod<br>
+    Champaner–Pavagadh · UNESCO World Heritage
+  </div>
+  <div class="footer-tags">
+    #PavagadhDiaries<br>#SoloRide<br>#Gujarat
+  </div>
+</footer>
+
+<script>
+// Sticky nav
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('solid', scrollY > 80);
+});
+
+// Scroll reveal
+const sr = document.querySelectorAll('.sr');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.08, rootMargin:'0px 0px -30px 0px' });
+sr.forEach(el => obs.observe(el));
+
+// Map switcher
+function updateMap(url) {
+  document.getElementById('mapFrame').src = url;
+  document.querySelectorAll('.ms-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>
